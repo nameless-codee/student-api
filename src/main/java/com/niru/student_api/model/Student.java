@@ -17,7 +17,7 @@ public class Student {
         this.email = email;
     }
 
-    // Getters and Setters
+    // GETTERS & SETTERS
     // Jackson uses these to serialize and deserialize JSON
     public Long getId() {
         return id;

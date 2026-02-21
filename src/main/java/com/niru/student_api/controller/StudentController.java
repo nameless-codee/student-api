@@ -38,9 +38,7 @@ public class StudentController {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Student with id " + id + " not found"
-                ));
-
-        // ResponseStatusException gives a clean 404 Not Found instead of confusing errors
+                )); // `ResponseStatusException` gives a clean 404 Not Found instead of confusing errors
     }
 
     @DeleteMapping("/{id}")
