@@ -1,42 +1,43 @@
 package com.niru.student_api.service;
 
 import com.niru.student_api.model.Student;
+import com.niru.student_api.repository.StudentRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StudentService {
 
-    private final List<Student> students = new ArrayList<>();
-    private Long nextId = 1L;
+    private final StudentRepository repository;
+
+    public StudentService(StudentRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Student> getAllStudents() {
-        return students;
+        return repository.findAll();
     }
 
     public Student addStudent(Student student) {
-        student.setId(nextId++);
-        students.add(student);
-        return student;
+        return repository.save(student);
     }
 
     public Student getStudentById(Long id) {
-        return students.stream()
-                .filter(s -> s.getId().equals(id))
-                .findFirst()
+        return repository.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
-                                "Student with id " + id + " not found"
+                                "Student not found"
                         ));
     }
 
     public void deleteStudent(Long id) {
-        Student student = getStudentById(id);
-        students.remove(student);
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
+        }
+        repository.deleteById(id);
     }
 }
